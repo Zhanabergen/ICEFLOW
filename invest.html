@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инвестировать - IceFlow | Токенизация активов на Solana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/invest.css">
+</head>
+<body class="bg-gray-900">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-gray-900/95 backdrop-blur-lg border-b border-blue-500/20">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
+                        <i class="fas fa-snowflake text-white text-xl"></i>
+                    </div>
+                    <span class="text-white font-bold text-2xl">IceFlow</span>
+                    <span class="text-blue-400 text-sm ml-2 hidden md:block">Invest</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-300 hover:text-blue-400 transition">Главная</a>
+                    <a href="dashboard.html" class="text-gray-300 hover:text-blue-400 transition">Дашборд</a>
+                    <a href="invest.html" class="text-blue-400">Инвестировать</a>
+                    <a href="profile.html" class="text-gray-300 hover:text-blue-400 transition">Профиль</a>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div id="walletInfo" class="flex items-center space-x-2 bg-gray-800 px-4 py-2 rounded-full">
+                        <div id="walletStatus" class="w-2 h-2 bg-red-400 rounded-full"></div>
+                        <span id="walletAddress" class="text-white text-sm font-mono">Не подключен</span>
+                    </div>
+                    <button id="connectWalletBtn" class="gradient-bg text-white px-4 py-2 rounded-full text-sm">
+                        <i class="fab fa-solana mr-2"></i> Подключить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-24 pb-12 px-6">
+        <div class="container mx-auto">
+            <!-- Page Header -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                    <i class="fas fa-snowflake text-blue-400 mr-2"></i>
+                    Начать инвестировать
+                </h1>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                    Выберите актив, укажите количество токенов и начните получать пассивный доход
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Assets List - Left Side -->
+                <div class="lg:col-span-2">
+                    <div class="bg-gray-800/50 rounded-2xl p-6 border border-gray-700">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold text-white">Доступные активы</h2>
+                            <div class="flex space-x-2">
+                                <button onclick="filterAssets('all')" class="filter-btn active px-4 py-2 rounded-lg text-sm bg-blue-600 text-white">Все</button>
+                                <button onclick="filterAssets('residential')" class="filter-btn px-4 py-2 rounded-lg text-sm bg-gray-700 text-gray-300 hover:bg-gray-600">Недвижимость</button>
+                                <button onclick="filterAssets('commercial')" class="filter-btn px-4 py-2 rounded-lg text-sm bg-gray-700 text-gray-300 hover:bg-gray-600">Коммерция</button>
+                            </div>
+                        </div>
+                        
+                        <div id="assetsList" class="space-y-4">
+                            <!-- Assets will be loaded here dynamically -->
+                            <div class="text-center py-8 text-gray-400">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <p>Загрузка активов...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Investment Panel - Right Side -->
+                <div class="lg:col-span-1">
+                    <div class="sticky top-24">
+                        <!-- Selected Asset Card -->
+                        <div class="bg-gray-800/50 rounded-2xl p-6 border border-gray-700 mb-6">
+                            <h3 class="text-lg font-bold text-white mb-4">Выбранный актив</h3>
+                            <div id="selectedAssetCard" class="text-center py-8 text-gray-400">
+                                <i class="fas fa-hand-pointer text-3xl mb-2"></i>
+                                <p>Выберите актив из списка</p>
+                            </div>
+                        </div>
+
+                        <!-- Investment Form -->
+                        <div class="bg-gray-800/50 rounded-2xl p-6 border border-gray-700">
+                            <h3 class="text-lg font-bold text-white mb-4">Инвестиционная форма</h3>
+                            
+                            <form id="investForm" class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-300 mb-2">Количество токенов</label>
+                                    <div class="flex items-center space-x-2">
+                                        <button type="button" onclick="adjustAmount(-1)" class="w-10 h-10 bg-gray-700 rounded-lg text-white hover:bg-gray-600">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" id="tokenAmount" value="1" min="1" class="flex-1 bg-gray-700 text-white text-center text-xl rounded-lg px-4 py-2 border border-gray-600 focus:border-blue-500 focus:outline-none">
+                                        <button type="button" onclick="adjustAmount(1)" class="w-10 h-10 bg-gray-700 rounded-lg text-white hover:bg-gray-600">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-gray-700/50 rounded-lg p-4 space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-400">Цена за токен:</span>
+                                        <span id="displayPrice" class="text-white font-mono">0 SOL</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-400">Комиссия платформы (1%):</span>
+                                        <span id="displayFee" class="text-white font-mono">0 SOL</span>
+                                    </div>
+                                    <div class="border-t border-gray-600 my-2"></div>
+                                    <div class="flex justify-between text-lg font-bold">
+                                        <span class="text-white">Итого к оплате:</span>
+                                        <span id="displayTotal" class="text-blue-400">0 SOL</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex space-x-3">
+                                    <button type="button" onclick="setQuickAmount(1)" class="flex-1 bg-gray-700 text-gray-300 py-2 rounded-lg text-sm hover:bg-gray-600">1 токен</button>
+                                    <button type="button" onclick="setQuickAmount(5)" class="flex-1 bg-gray-700 text-gray-300 py-2 rounded-lg text-sm hover:bg-gray-600">5 токенов</button>
+                                    <button type="button" onclick="setQuickAmount(10)" class="flex-1 bg-gray-700 text-gray-300 py-2 rounded-lg text-sm hover:bg-gray-600">10 токенов</button>
+                                    <button type="button" onclick="setQuickAmount(25)" class="flex-1 bg-gray-700 text-gray-300 py-2 rounded-lg text-sm hover:bg-gray-600">25 токенов</button>
+                                </div>
+
+                                <button type="submit" id="investBtn" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                    <i class="fas fa-rocket mr-2"></i> Инвестировать
+                                </button>
+                            </form>
+
+                            <div class="mt-4 text-center text-xs text-gray-500">
+                                <i class="fas fa-shield-alt mr-1"></i> Безопасные транзакции на Solana
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Tips -->
+            <div class="mt-12 grid md:grid-cols-3 gap-6">
+                <div class="bg-gray-800/30 rounded-xl p-4 text-center">
+                    <i class="fas fa-chart-line text-2xl text-blue-400 mb-2"></i>
+                    <h4 class="text-white font-semibold mb-1">Доходность до 15% APY</h4>
+                    <p class="text-gray-400 text-sm">Стабильный пассивный доход от аренды</p>
+                </div>
+                <div class="bg-gray-800/30 rounded-xl p-4 text-center">
+                    <i class="fas fa-bolt text-2xl text-blue-400 mb-2"></i>
+                    <h4 class="text-white font-semibold mb-1">Мгновенные транзакции</h4>
+                    <p class="text-gray-400 text-sm">Блокчейн Solana для быстрых операций</p>
+                </div>
+                <div class="bg-gray-800/30 rounded-xl p-4 text-center">
+                    <i class="fas fa-shield-alt text-2xl text-blue-400 mb-2"></i>
+                    <h4 class="text-white font-semibold mb-1">Полная безопасность</h4>
+                    <p class="text-gray-400 text-sm">Аудированные смарт-контракты</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Modal -->
+    <div id="transactionModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+        <div class="bg-gray-800 rounded-2xl p-8 max-w-md w-full mx-4 border border-blue-500/30 transform transition-all scale-95">
+            <div class="text-center">
+                <div id="modalIcon" class="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center">
+                    <i class="fas fa-spinner fa-spin text-4xl text-blue-400"></i>
+                </div>
+                <h3 id="modalTitle" class="text-xl font-bold text-white mb-2">Обработка транзакции</h3>
+                <p id="modalMessage" class="text-gray-400 mb-4">Пожалуйста, подождите...</p>
+                <div id="modalProgress" class="w-full bg-gray-700 rounded-full h-2 mb-4">
+                    <div class="gradient-bg h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <button id="modalCloseBtn" onclick="closeModal()" class="hidden gradient-bg text-white px-6 py-2 rounded-lg">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="successToast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 hidden transform transition-all duration-300 translate-x-full">
+        <i class="fas fa-check-circle mr-2"></i>
+        <span id="toastMessage">Успешно!</span>
+    </div>
+
+    <script src="js/invest.js"></script>
+</body>
+</html>

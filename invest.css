@@ -1,0 +1,298 @@
+/* invest.css - Стили для страницы инвестирования IceFlow */
+
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+.gradient-bg {
+    background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%);
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+/* Классы анимаций */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.5s ease-out forwards;
+}
+
+/* Карточки активов */
+.asset-card {
+    background: rgba(31, 41, 55, 0.7);
+    border: 1px solid rgba(75, 85, 99, 0.5);
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.asset-card:hover {
+    transform: translateX(8px);
+    border-color: rgba(0, 198, 251, 0.5);
+    box-shadow: 0 10px 25px -5px rgba(0, 198, 251, 0.2);
+}
+
+.asset-card.selected {
+    border-color: #00c6fb;
+    background: rgba(0, 198, 251, 0.1);
+    box-shadow: 0 0 20px rgba(0, 198, 251, 0.3);
+}
+
+/* Фильтры */
+.filter-btn {
+    transition: all 0.2s ease;
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%);
+    color: white;
+}
+
+.filter-btn:not(.active):hover {
+    background: #374151;
+    color: white;
+}
+
+/* Прогресс бар */
+.progress-bar {
+    transition: width 0.5s ease-out;
+}
+
+/* Скелетон загрузки */
+.skeleton {
+    background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+    border-radius: 8px;
+}
+
+/* Кастомный скроллбар */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f2937;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00c6fb;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .asset-card:hover {
+        transform: translateX(0);
+    }
+    
+    .sticky {
+        position: relative;
+        top: 0;
+    }
+}
+
+/* Кастомные чекбоксы и радиокнопки */
+.custom-checkbox {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #374151;
+    border: 2px solid #4b5563;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.custom-checkbox:checked {
+    background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%);
+    border-color: #00c6fb;
+    position: relative;
+}
+
+.custom-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Тосты */
+.toast-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.toast-info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+/* Анимация для модального окна */
+.modal-enter {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Hover эффекты */
+.hover-scale {
+    transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+/* Градиентные границы */
+.gradient-border {
+    position: relative;
+    background: #1f2937;
+    border-radius: 16px;
+}
+
+.gradient-border::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #00c6fb, #005bea);
+    border-radius: 18px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gradient-border:hover::before {
+    opacity: 1;
+}
+
+/* Счетчик токенов */
+.token-counter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #374151;
+    border-radius: 12px;
+    padding: 4px;
+}
+
+.token-counter button {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #4b5563;
+    color: white;
+    transition: all 0.2s;
+}
+
+.token-counter button:hover {
+    background: #00c6fb;
+}
+
+.token-counter input {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    background: transparent;
+    border: none;
+    color: white;
+    width: 80px;
+}
+
+.token-counter input:focus {
+    outline: none;
+}
+
+/* Стили для disabled кнопок */
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Анимация пульсации для уведомлений */
+@keyframes ping {
+    75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.ping-animation {
+    animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Стили для выбранного актива */
+.selected-asset-highlight {
+    position: relative;
+    overflow: hidden;
+}
+
+.selected-asset-highlight::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 198, 251, 0.2), rgba(0, 91, 234, 0.2));
+    pointer-events: none;
+}

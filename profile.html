@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой профиль - IceFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%); }
+        .ice-effect {
+            background: rgba(0, 198, 251, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 198, 251, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+    <div class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="bg-gray-900/95 backdrop-blur-lg border-b border-blue-500/20">
+            <div class="container mx-auto px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <a href="index.html" class="flex items-center space-x-2">
+                        <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
+                            <i class="fas fa-snowflake text-white text-xl"></i>
+                        </div>
+                        <span class="text-white font-bold text-xl">IceFlow</span>
+                    </a>
+                    <div class="flex space-x-6">
+                        <a href="dashboard.html" class="text-gray-300 hover:text-blue-400 transition">Дашборд</a>
+                        <a href="index.html" class="text-blue-400">Профиль</a>
+                        <button onclick="logout()" class="text-red-400 hover:text-red-300 transition">Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container mx-auto px-6 py-12">
+            <div class="max-w-4xl mx-auto">
+                <!-- Profile Header -->
+                <div class="ice-effect p-8 text-center mb-8">
+                    <div class="w-24 h-24 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span id="profileInitial" class="text-white text-3xl font-bold">U</span>
+                    </div>
+                    <h1 id="profileName" class="text-2xl font-bold text-white">Пользователь</h1>
+                    <p id="profileEmail" class="text-gray-400">user@example.com</p>
+                    <div class="mt-4 inline-flex items-center px-4 py-2 bg-gray-700 rounded-full">
+                        <i class="fab fa-solana text-blue-400 mr-2"></i>
+                        <span id="profileWallet" class="text-white text-sm font-mono">Не подключен</span>
+                    </div>
+                    <div class="mt-4">
+                        <span class="inline-flex items
